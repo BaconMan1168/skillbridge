@@ -2,7 +2,6 @@
   "name": "skillbridge",
   "version": "1.0.0",
   "description": "SkillBridge is a dynamic skill matching platform designed to foster peer-to-peer learning and mutual growth. It connects users who are seeking specific knowledge with others who are proficient in those skills, creating an efficient system for skill exchange and short-term tutoring.",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,16 +13,13 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "bugs": {
     "url": "https://github.com/BaconMan1168/skillbridge/issues"
   },
-  "homepage": "https://github.com/BaconMan1168/skillbridge#readme",
-  "dependencies": {
-    "@prisma/client": "^7.0.0",
-    "bcryptjs": "^3.0.3",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "prisma": "^7.0.0",
-    "socket.io": "^4.8.1"
-  }
+  "homepage": "https://github.com/BaconMan1168/skillbridge#readme"
 }

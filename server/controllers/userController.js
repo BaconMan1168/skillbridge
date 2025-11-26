@@ -58,23 +58,27 @@ async function loginUser(req, res){
     }
 }
 
-async function getUserProfile(req, res){
-    try {
-        const { userId } = req.user
+const getUserProfile = [
+    auth,
+    async (req, res) => {
+        try {
+            const { userId } = req.user
 
-        const user = await prisma.user.findUnique({
-            where: {
-                id: userId,
-                include: { userSkills: true }
-            }
-        })
-        res.status(200).json(user)
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: userId,
+                    include: { userSkills: true }
+                }
+            })
+            res.status(200).json(user)
+        }
+        catch (err) {
+            console.error(err)
+            res.status(400).json({ error: "Failed to fetch profile "})
+        }
     }
-    catch (err) {
-        console.error(err)
-        res.status(400).json({ error: "Failed to fetch profile "})
-    }
-}
+]
+
 
 module.exports = {
     registerUser,

@@ -68,6 +68,9 @@ model Session {
   endAt         DateTime?
   rating        Int?
   messages      Message[]
+
+  mentorReady  Boolean @default(false)
+  learnerReady Boolean @default(false)
 }
 
 model Message {

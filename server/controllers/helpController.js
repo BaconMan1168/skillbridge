@@ -63,8 +63,7 @@ const createHelpRequest = [
                 data: {
                     helpRequestId: request.id,
                     mentorId: mentorSkill.user.id,
-                    learnerId: userId,
-                    startAt: new Date()
+                    learnerId: userId
                 }
             });
 

@@ -26,3 +26,24 @@ const getHelpRequests = [
         }
     }
 ]
+
+const createHelpRequest = [
+    auth,
+    async (req, res) => {
+        try {
+            const { userId } = req.user
+            const { skillId } = req.body
+
+            const request = await prisma.user.create({
+                data: {
+                    requesterId: userId,
+                    skillId,
+                }
+            })
+        }
+        catch (err) {
+            console.error(err)
+            res.status(400).json({ error: "Failed to create help request"} )
+        }
+    }
+]

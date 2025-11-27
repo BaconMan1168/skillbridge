@@ -40,6 +40,8 @@ const createHelpRequest = [
                     skillId,
                 }
             })
+
+            //need to make matchmaking logic first
         }
         catch (err) {
             console.error(err)

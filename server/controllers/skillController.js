@@ -43,3 +43,7 @@ const setSkills = [
     }
 ]
 
+module.exports = {
+    getSkills,
+    setSkills
+}

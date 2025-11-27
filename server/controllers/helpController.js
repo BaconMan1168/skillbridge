@@ -47,3 +47,8 @@ const createHelpRequest = [
         }
     }
 ]
+
+module.exports = {
+    getHelpRequests,
+    createHelpRequest
+}

@@ -67,8 +67,8 @@ const getUserProfile = [
             const user = await prisma.user.findUnique({
                 where: {
                     id: userId,
-                    include: { userSkills: true }
-                }
+                },
+                include: { userSkills: true }
             })
             res.status(200).json(user)
         }

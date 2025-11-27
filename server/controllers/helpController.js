@@ -34,7 +34,7 @@ const createHelpRequest = [
             const { userId } = req.user
             const { skillId } = req.body
 
-            const request = await prisma.user.create({
+            const request = await prisma.helpRequest.create({
                 data: {
                     requesterId: userId,
                     skillId,

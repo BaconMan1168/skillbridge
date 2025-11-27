@@ -58,5 +58,45 @@ const markReady = [
     }
 ];
 
+const endSession = [
+    auth,
+    async (req, res) => {
+        try {
+            const { sessionId } = req.body;
 
+            const session = await prisma.session.update({
+                where: { id: sessionId },
+                data: {
+                    endAt: new Date(),
+                    status: "ended"
+                }
+            });
 
+            res.status(200).json({ message: "Session ended", session });
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Failed to end session" });
+        }
+    }
+];
+
+const rateSession = [
+    auth,
+    async (req, res) => {
+        try {
+            const { sessionId, rating } = req.body;
+
+            const session = await prisma.session.update({
+                where: { id: sessionId },
+                data: { rating }
+            });
+
+            res.status(200).json({ message: "Rating submitted", session });
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Failed to rate session" });
+        }
+    }
+];

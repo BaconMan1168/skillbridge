@@ -41,7 +41,45 @@ const createHelpRequest = [
                 }
             })
 
-            //need to make matchmaking logic first
+            const mentorSkill = await prisma.userSkill.findFirst({
+                where: {
+                    skillId,
+                    role: "mentor"
+                },
+                include: {
+                    user: true
+                }
+            });
+
+            if (!mentorSkill) {
+                return res.status(200).json({
+                    message: "Help request created but no mentor available",
+                    status: "pending",
+                    helpRequest: request
+                });
+            }
+
+            const session = await prisma.session.create({
+                data: {
+                    helpRequestId: request.id,
+                    mentorId: mentorSkill.user.id,
+                    learnerId: userId,
+                    startAt: new Date()
+                }
+            });
+
+            await prisma.helpRequest.update({
+                where: { id: request.id },
+                data: { status: "matched" }
+            });
+
+            return res.status(201).json({
+                message: "Matched with mentor",
+                status: "matched",
+                session,
+                helpRequest: request
+            });
+
         }
         catch (err) {
             console.error(err)
@@ -54,3 +92,4 @@ module.exports = {
     getHelpRequests,
     createHelpRequest
 }
+

@@ -40,7 +40,7 @@ const markReady = [
                         startAt: new Date()
                     }
                 });
-                res.status(200).json({
+                return res.status(200).json({
                     message: "Both users ready. Session started.",
                     session: started
                 });

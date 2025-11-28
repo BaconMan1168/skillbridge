@@ -8,3 +8,7 @@ const sessionRouter = Router();
 sessionRouter.post('/ready', sessionController.markReady)
 sessionRouter.post('/end', sessionController.endSession)
 sessionRouter.post('/rate', sessionController.rateSession)
+sessionRouter.get('/me', sessionController.getSessions)
+sessionRouter.get('/:id', sessionController.getSessionById)
+
+module.exports = sessionRouter

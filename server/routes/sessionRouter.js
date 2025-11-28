@@ -6,9 +6,8 @@ const sessionRouter = Router();
 
 // /sessions route
 sessionRouter.post('/ready', sessionController.markReady)
-sessionRouter.post('/end', sessionController.endSession)
-sessionRouter.post('/rate', sessionController.rateSession)
 sessionRouter.get('/me', sessionController.getSessions)
+sessionRouter.post('/complete', completeSession)
 sessionRouter.get('/:id', sessionController.getSessionById)
 
 module.exports = sessionRouter

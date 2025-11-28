@@ -25,6 +25,7 @@ model User {
   helpRequests      HelpRequest[] @relation("requester")
   sessionsAsMentor  Session[]     @relation("mentor")
   sessionsAsLearner Session[]     @relation("learner")
+  messages          Message[]
 }
 
 model Skill {
@@ -79,6 +80,7 @@ model Message {
   session   Session  @relation(fields: [sessionId], references: [id])
   sessionId Int
   senderId  Int
+  sender    User     @relation(fields: [senderId], references: [id])
   content   String
   createdAt DateTime @default(now())
 }

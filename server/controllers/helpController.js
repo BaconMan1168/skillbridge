@@ -87,8 +87,37 @@ const createHelpRequest = [
     }
 ]
 
+const cancelHelpRequest = [
+    auth,
+    async (req, res) => {
+        try {
+            const { userId } = req.user;
+
+            const helpRequest = await prisma.helpRequest.findFirst({
+                where: { learnerId: userId, status: "pending" }
+            });
+
+            if (!helpRequest) {
+                return res.status(404).json({ error: "No active help request to cancel" });
+            }
+
+            await prisma.helpRequest.update({
+                where: { id: helpRequest.id },
+                data: { status: "cancelled" }
+            });
+
+            return res.json({ message: "Help request cancelled" });
+        } catch (err) {
+            console.error("cancelHelpRequest error:", err);
+            return res.status(500).json({ error: "Server error" });
+        }
+
+    }
+]
+
 module.exports = {
     getHelpRequests,
-    createHelpRequest
+    createHelpRequest,
+    cancelHelpRequest
 }
 

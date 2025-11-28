@@ -58,45 +58,67 @@ const markReady = [
     }
 ];
 
-const endSession = [
-    auth,
-    async (req, res) => {
-        try {
-            const { sessionId } = req.body;
-
-            const session = await prisma.session.update({
-                where: { id: sessionId },
-                data: {
-                    endAt: new Date(),
-                    status: "ended"
-                }
-            });
-
-            res.status(200).json({ message: "Session ended", session });
-        }
-        catch (err) {
-            console.error(err);
-            res.status(500).json({ error: "Failed to end session" });
-        }
-    }
-];
-
-const rateSession = [
+const completeSession = [
     auth,
     async (req, res) => {
         try {
             const { sessionId, rating } = req.body;
+            const { userId } = req.user;
 
-            const session = await prisma.session.update({
+            if (!rating || rating < 1 || rating > 5) {
+                return res.status(400).json({ error: "Rating must be 1-5" });
+            }
+
+            const session = await prisma.session.findUnique({
                 where: { id: sessionId },
-                data: { rating }
+                include: { mentor: true }
             });
 
-            res.status(200).json({ message: "Rating submitted", session });
-        }
-        catch (err) {
-            console.error(err);
-            res.status(500).json({ error: "Failed to rate session" });
+            if (!session) {
+                return res.status(404).json({ error: "Session not found" });
+            }
+
+            if (session.status === "completed") {
+                return res.status(400).json({ error: "Session already completed" });
+            }
+
+            const updatedSession = await prisma.session.update({
+                where: { id: sessionId },
+                data: {
+                    status: "completed",
+                    endAt: new Date(),
+                    rating
+                }
+            });
+
+            const mentor = session.mentor;
+
+            const newSessionsCompleted = mentor.sessionsCompleted + 1;
+            
+            let newRating;
+            if (mentor.sessionsCompleted === 0){
+                newRating = rating
+            }
+            else {
+                newRating = (mentor.rating * mentor.sessionsCompleted + rating) / newSessionsCompleted
+            }
+
+            await prisma.user.update({
+                where: { id: mentor.id },
+                data: {
+                    sessionsCompleted: newSessionsCompleted,
+                    rating: newRating
+                }
+            });
+
+            return res.status(200).json({
+                message: "Session completed and mentor rated.",
+                session: updatedSession
+            });
+
+        } catch (err) {
+            console.error("completeSession error:", err);
+            res.status(500).json({ error: "Failed to complete session" });
         }
     }
 ];
@@ -199,8 +221,7 @@ const declineSession = [
 
 module.exports = {
     markReady,
-    endSession,
-    rateSession,
+    completeSession,
     getSessions,
     getSessionById,
     declineSession

@@ -164,10 +164,44 @@ const getSessionById = [
     }
 ];
 
+const declineSession = [
+    auth,
+    async (req, res) => {
+        try {
+            const { userId } = req.user;
+            const { sessionId } = req.body;
+
+            const session = await prisma.session.findUnique({ where: { id: sessionId }});
+
+            if (!session) return res.status(404).json({ error: "Session not found" });
+
+            if (session.mentorId !== userId) {
+                return res.status(403).json({ error: "Only the mentor can decline" });
+            }
+
+            await prisma.session.update({
+                where: { id: sessionId },
+                data: { status: "declined" }
+            });
+
+            await prisma.helpRequest.update({
+                where: { id: session.helpRequestId },
+                data: { status: "pending" }
+            });
+
+            res.status(200).json({ message: "Match declined" });
+        } catch (err) {
+            console.error("declineMatch error:", err);
+            res.status(500).json({ error: "Server error" });
+        }
+    }
+]
+
 module.exports = {
     markReady,
     endSession,
     rateSession,
     getSessions,
-    getSessionById
+    getSessionById,
+    declineSession
 }

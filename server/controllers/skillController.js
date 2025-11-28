@@ -34,6 +34,32 @@ const setSkills = [
                 }))
             })
 
+            const newlyAddedMentorSkills = skills
+                .filter(s => s.role === "mentor")
+                .map(s => s.skillId);
+
+            const pendingRequests = await prisma.helpRequest.findMany({
+                where: {
+                    skillId: { in: newlyAddedMentorSkills },
+                    status: "pending"
+                }
+            });
+
+            for (let req of pendingRequests) {
+                await prisma.session.create({
+                    data: {
+                        helpRequestId: req.id,
+                        mentorId: userId,
+                        learnerId: req.requesterId
+                    }
+                });
+
+                await prisma.helpRequest.update({
+                    where: { id: req.id },
+                    data: { status: "matched" }
+                });
+            }
+
             res.status(200).json({ message: "Skills updated" })
         }
         catch (err) {

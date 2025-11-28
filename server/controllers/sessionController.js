@@ -100,3 +100,9 @@ const rateSession = [
         }
     }
 ];
+
+module.exports = {
+    markReady,
+    endSession,
+    rateSession
+}

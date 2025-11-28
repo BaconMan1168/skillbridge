@@ -68,6 +68,7 @@ model Session {
   endAt         DateTime?
   rating        Int?
   messages      Message[]
+  status        String       @default("pending")
 
   mentorReady  Boolean @default(false)
   learnerReady Boolean @default(false)

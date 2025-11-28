@@ -101,8 +101,73 @@ const rateSession = [
     }
 ];
 
+const getSessions = [
+    auth,
+    async (req, res) => {
+        try {
+            const { userId } = req.user;
+
+            const sessions = await prisma.session.findMany({
+                where: {
+                    OR: [
+                        { mentorId: userId },
+                        { learnerId: userId }
+                    ]
+                },
+                include: {
+                    helpRequest: {
+                        include: { skill: true }
+                    },
+                    mentor: true,
+                    learner: true
+                }
+            });
+
+            res.status(200).json(sessions);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Failed to get sessions" });
+        }
+    }
+];
+
+const getSessionById = [
+    auth,
+    async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { userId } = req.user;
+
+            const session = await prisma.session.findUnique({
+                where: { id: Number(id) },
+                include: {
+                    helpRequest: { include: { skill: true } },
+                    mentor: true,
+                    learner: true,
+                    messages: true
+                }
+            });
+
+            if (!session) {
+                return res.status(404).json({ error: "Session not found" });
+            }
+
+            if (session.mentorId !== userId && session.learnerId !== userId) {
+                return res.status(403).json({ error: "Not allowed" });
+            }
+
+            res.status(200).json(session);
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: "Failed to get session" });
+        }
+    }
+];
+
 module.exports = {
     markReady,
     endSession,
-    rateSession
+    rateSession,
+    getSessions,
+    getSessionById
 }

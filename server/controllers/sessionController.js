@@ -46,7 +46,7 @@ const markReady = [
                 });
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Marked ready. Waiting on the other person.",
                 session: updated
             });

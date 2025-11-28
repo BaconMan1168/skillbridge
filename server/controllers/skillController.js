@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const auth = require('../middleware/auth');
+const jwtAuth = require('../middleware/auth');
 
 async function getSkills(req, res){
     try {
@@ -14,7 +14,7 @@ async function getSkills(req, res){
 }
 
 const setSkills = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user

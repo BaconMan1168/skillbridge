@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const auth = require('../middleware/auth');
+const jwtAuth = require('../middleware/auth');
 require('dotenv').config()
 
 async function registerUser(req, res){
@@ -59,7 +59,7 @@ async function loginUser(req, res){
 }
 
 const getUserProfile = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user

@@ -1,9 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const auth = require('../middleware/auth');
+const jwtAuth = require('../middleware/auth');
 
 const getHelpRequests = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user
@@ -28,7 +28,7 @@ const getHelpRequests = [
 ]
 
 const createHelpRequest = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user
@@ -88,13 +88,13 @@ const createHelpRequest = [
 ]
 
 const cancelHelpRequest = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user;
 
             const helpRequest = await prisma.helpRequest.findFirst({
-                where: { learnerId: userId, status: "pending" }
+                where: { requesterId: userId, status: "pending" }
             });
 
             if (!helpRequest) {

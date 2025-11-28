@@ -1,9 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const auth = require('../middleware/auth');
+const jwtAuth = require('../middleware/auth');
 
 const markReady = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { sessionId } = req.body;
@@ -59,7 +59,7 @@ const markReady = [
 ];
 
 const completeSession = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { sessionId, rating } = req.body;
@@ -124,7 +124,7 @@ const completeSession = [
 ];
 
 const getSessions = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user;
@@ -154,7 +154,7 @@ const getSessions = [
 ];
 
 const getSessionById = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { id } = req.params;
@@ -187,7 +187,7 @@ const getSessionById = [
 ];
 
 const declineSession = [
-    auth,
+    jwtAuth,
     async (req, res) => {
         try {
             const { userId } = req.user;
